@@ -7,23 +7,36 @@ parallel_plan: true
 parallel_apply: true
 abort_on_execution_order_fail: true
 projects:
-  - name: my-project-name
+  - name: atlantis-test
     branch: /main/
     dir: .
     workspace: default
-    terraform_version: v1.9.3
+    terraform_version: v0.11.0
     delete_source_branch_on_merge: true
-    repo_locking: true # deprecated: use repo_locks instead
+    repo_locking: true
     repo_locks:
       mode: on_plan
     custom_policy_check: false
     autoplan:
-      when_modified: ['*.tf', '../modules/**/*.tf', '.terraform.lock.hcl']
+      when_modified:
+        - "*.tf"
+        - ../modules/**/*.tf
+        - .terraform.lock.hcl
       enabled: true
-    plan_requirements: [mergeable, approved, undiverged]
-    apply_requirements: [mergeable, approved, undiverged]
-    import_requirements: [mergeable, approved, undiverged]
-    silence_pr_comments: ['apply']
+    plan_requirements:
+      - mergeable
+      - approved
+      - undiverged
+    apply_requirements:
+      - mergeable
+      - approved
+      - undiverged
+    import_requirements:
+      - mergeable
+      - approved
+      - undiverged
+    silence_pr_comments:
+      - apply
     execution_order_group: 1
     depends_on:
       - project-1
@@ -38,7 +51,9 @@ workflows:
             output: hide
         - init
         - plan:
-            extra_args: ['-lock', 'false']
+            extra_args:
+              - -lock
+              - "false"
         - run: my-custom-command arg1 arg2
     apply:
       steps:
